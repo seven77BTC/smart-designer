@@ -2,8 +2,8 @@ const DxfParser = require("dxf-parser");
 const fs = require("fs");
 const path = require("path")
 
-var DXF_FILE_PATH = "../dxf/0.dxf";
-var OUTPUT_FILE_NAME = "out.json";
+var DXF_FILE_PATH = "../dxf/1.dxf";
+var OUTPUT_FILE_NAME = "out1.json";
 
 async function dxfConvertor(){
     var fileStream = fs.createReadStream(DXF_FILE_PATH);
