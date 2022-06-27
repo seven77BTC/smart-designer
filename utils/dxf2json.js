@@ -2,15 +2,23 @@ const DxfParser = require("dxf-parser");
 const fs = require("fs");
 const path = require("path")
 
-var DXF_FILE_PATH = "../dxf/1.dxf";
-var OUTPUT_FILE_NAME = "out1.json";
-
-async function dxfConvertor(){
-    var fileStream = fs.createReadStream(DXF_FILE_PATH);
+// Create a Promise convert dxf file to json file
+async function dxfConvertor(dxf_file, json_file){
+    var fileStream = fs.createReadStream(dxf_file);
     var parser = new DxfParser();
     const dxf = await parser.parseStream(fileStream);
-    fs.writeFileSync(OUTPUT_FILE_NAME, JSON.stringify(dxf, null, 3));
-    console.log("Done writing output to " + OUTPUT_FILE_NAME);
+    fs.writeFileSync(json_file, JSON.stringify(dxf, null, 3));
+    console.log("Done writing output to " + json_file);
 }
 
-dxfConvertor()
+// Load dxf file
+const DXF_DIR = "../dxf/";
+const JSON_DIR = "../json/";
+
+var readDir = fs.readdirSync(DXF_DIR);
+for (dxf_file of readDir) {
+    dxf_path = DXF_DIR + dxf_file;
+    json_path = JSON_DIR + dxf_file.split(".")[0] + ".json";
+    convertor = dxfConvertor(dxf_path, json_path);
+    convertor.then();
+}
