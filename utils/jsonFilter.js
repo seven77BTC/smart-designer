@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path")
 
 
-function layerFilter(json_dir, json_file, layer, txt_dir){
+function layerFilter(json_dir, json_file, txt_dir){
     var drawing_file = json_dir + json_file;
     var write_file = txt_dir + json_file.split(".")[0] + ".txt";
     var drawing = require(drawing_file);
@@ -14,7 +14,16 @@ function layerFilter(json_dir, json_file, layer, txt_dir){
     for (var name in drawing.blocks){
         entities = drawing.blocks[name].entities;
         for (var i in entities){
-            if (entities[i].layer === layer && entities[i].type === "LINE"){
+            if (entities[i].layer === "WALL" && entities[i].type === "LINE"){
+                line = [
+                    entities[i].vertices[0].x, 
+                    entities[i].vertices[0].y, 
+                    entities[i].vertices[1].x, 
+                    entities[i].vertices[1].y
+                ];
+                line = line.join(",") + "\n";
+                writerStream.write(line, "UTF-8");
+            } else if (entities[i].layer === "WINDOW" && entities[i].type === "LINE"){
                 line = [
                     entities[i].vertices[0].x, 
                     entities[i].vertices[0].y, 
@@ -30,7 +39,16 @@ function layerFilter(json_dir, json_file, layer, txt_dir){
     // xxx.entities[i].vertices
     for (var name in drawing.entities){
         entity = drawing.entities[name];
-        if (entity.layer === layer && entity.type === "LINE"){
+        if (entity.layer === "WALL" && entity.type === "LINE"){
+            line = [
+                entity.vertices[0].x, 
+                entity.vertices[0].y, 
+                entity.vertices[1].x, 
+                entity.vertices[1].y
+            ];
+            line = line.join(",") + "\n";
+            writerStream.write(line, "UTF-8");
+        } else if (entity.layer === "WINDOW" && entity.type === "LINE"){
             line = [
                 entity.vertices[0].x, 
                 entity.vertices[0].y, 
@@ -58,5 +76,5 @@ const TXT_DIR = "../txt/";
 var readDir = fs.readdirSync(JSON_DIR);
 
 for (json_file of readDir) {
-    layerFilter(JSON_DIR, json_file, "WALL", TXT_DIR);
+    layerFilter(JSON_DIR, json_file, TXT_DIR);
 }
